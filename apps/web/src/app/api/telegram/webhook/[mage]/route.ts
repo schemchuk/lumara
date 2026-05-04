@@ -125,15 +125,25 @@ export async function POST(req: NextRequest, { params }: { params: { mage: strin
   const secretToken = req.headers.get('x-telegram-bot-api-secret-token')
   const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET
 
-  // Fallback: приймаємо запити без хедера — це legacy pending updates з черги Telegram,
-  // які накопичились до встановлення secret_token. Нові запити мають хедер.
-  if (secretToken && secretToken !== expectedSecret) {
-    console.error(`[webhook] Unauthorized: mage=${params.mage}, header mismatch`)
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
-  }
-
-  if (!secretToken && expectedSecret) {
-    console.log(`[webhook] Legacy pending update (no secret header): mage=${params.mage}`)
+  if (expectedSecret) {
+    // Секрет налаштовано — вимагаємо точну відповідність
+    if (secretToken !== expectedSecret) {
+      console.error(
+        `[webhook] Unauthorized: mage=${params.mage}, ` +
+        `header=${secretToken ? 'present' : 'missing'}, expectedSecret=${expectedSecret ? 'set' : 'unset'}`
+      )
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
+    }
+  } else {
+    // Секрет не налаштовано у Vercel — приймаємо все, але попереджаємо
+    if (secretToken) {
+      console.warn(
+        `[webhook] WARNING: mage=${params.mage}, secret header received but TELEGRAM_WEBHOOK_SECRET not set in env. ` +
+        `Add TELEGRAM_WEBHOOK_SECRET to Vercel Environment Variables to secure this webhook.`
+      )
+    } else {
+      console.log(`[webhook] Legacy pending update (no secret header): mage=${params.mage}`)
+    }
   }
 
   const mageParam = params.mage.toLowerCase()
