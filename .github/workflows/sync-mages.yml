@@ -207,6 +207,17 @@ jobs:
           delete_file ".github/workflows/daily-umbra.yml" "cleanup: remove orphaned daily-umbra"
           delete_file ".github/workflows/telegram-monitor.yml" "cleanup: remove orphaned telegram-monitor"
 
+          # ── Academy workflows не повинні бути в репо магів ──
+          if [ "$MAGE" != "academy" ]; then
+            delete_file ".github/workflows/academy-posts.yml" "cleanup: academy workflow не для репо мага"
+            delete_file ".github/workflows/academy-weekend.yml" "cleanup: academy workflow не для репо мага"
+          fi
+
+          # ── sync-mages.yml не повинен бути в репо академії ──
+          if [ "$MAGE" = "academy" ]; then
+            delete_file ".github/workflows/sync-mages.yml" "cleanup: sync-mages не для репо академії"
+          fi
+
       - name: Sync secrets to ${{ matrix.repo }}"
         env:
           GH_TOKEN: ${{ secrets[matrix.token_secret] }}
