@@ -17,7 +17,7 @@ jobs:
           - mage: luna
             repo: lunalumarafyi-lab/lumara
             token_secret: LUNA_GITHUB_TOKEN
-            daily_cron: '0 19 * * *'
+            daily_cron: '0 9 * * 1,5'
             ig_user_id_secret: LUNA_IG_USER_ID
             fb_page_id_secret: LUNA_FB_PAGE_ID
             page_access_token_secret: LUNA_PAGE_ACCESS_TOKEN
@@ -27,7 +27,7 @@ jobs:
           - mage: arcas
             repo: arcaslumara-max/lumara
             token_secret: ARCAS_GITHUB_TOKEN
-            daily_cron: '0 5 * * *'
+            daily_cron: '0 9 * * 2'
             ig_user_id_secret: ARCAS_IG_USER_ID
             fb_page_id_secret: ARCAS_FB_PAGE_ID
             page_access_token_secret: ARCAS_PAGE_ACCESS_TOKEN
@@ -37,7 +37,7 @@ jobs:
           - mage: numi
             repo: numilumara-design/lumara
             token_secret: NUMI_GITHUB_TOKEN
-            daily_cron: '0 10 * * *'
+            daily_cron: '0 9 * * 3'
             ig_user_id_secret: NUMI_IG_USER_ID
             fb_page_id_secret: NUMI_FB_PAGE_ID
             page_access_token_secret: NUMI_PAGE_ACCESS_TOKEN
@@ -47,7 +47,7 @@ jobs:
           - mage: umbra
             repo: umbralumara-oss/lumara
             token_secret: UMBRA_GITHUB_TOKEN
-            daily_cron: '0 16 * * *'
+            daily_cron: '0 9 * * 4'
             ig_user_id_secret: UMBRA_IG_USER_ID
             fb_page_id_secret: UMBRA_FB_PAGE_ID
             page_access_token_secret: UMBRA_PAGE_ACCESS_TOKEN

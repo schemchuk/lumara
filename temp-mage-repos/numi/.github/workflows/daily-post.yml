@@ -2,7 +2,7 @@ name: Daily Post — Numi
 
 on:
   schedule:
-    - cron: '0 10 * * *'
+    - cron: '0 9 * * 3'  # Ср 09:00 UTC = 11:00/12:00 Київ
   workflow_dispatch:
 
 env:

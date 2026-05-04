@@ -2,8 +2,8 @@ name: Instagram Comment Monitor
 
 on:
   schedule:
-    # Частота: щогодини
-    - cron: '0 * * * *'
+    # Частота: кожні 5 хвилин (для швидкої обробки DM)
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 env:
@@ -41,6 +41,7 @@ jobs:
           ARCAS_IG_USER_ID: ${{ secrets.ARCAS_IG_USER_ID }}
           NUMI_IG_USER_ID: ${{ secrets.NUMI_IG_USER_ID }}
           UMBRA_IG_USER_ID: ${{ secrets.UMBRA_IG_USER_ID }}
+          ACADEMY_IG_USER_ID: ${{ secrets.ACADEMY_IG_USER_ID }}
           INSTAGRAM_MAX_PER_DAY: ${{ secrets.INSTAGRAM_MAX_PER_DAY || '20' }}
         run: |
           python packages/agents/scripts/instagram_comment_monitor.py

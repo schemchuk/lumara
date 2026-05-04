@@ -2,7 +2,7 @@ name: Daily Post — Luna
 
 on:
   schedule:
-    - cron: '0 19 * * *'
+    - cron: '0 9 * * 1,5'  # Пн, Пт 09:00 UTC = 11:00/12:00 Київ
   workflow_dispatch:
 
 env:
