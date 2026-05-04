@@ -54,6 +54,14 @@ jobs:
             page_id_secret: UMBRA_PAGE_ID
             telegram_channel_id_secret: UMBRA_TELEGRAM_CHANNEL_ID
             telegram_bot_token_secret: UMBRA_TELEGRAM_BOT_TOKEN
+          - mage: academy
+            repo: academylumara-hub/lumara  # Замінити на реальну org/repo після створення
+            token_secret: ACADEMY_GITHUB_TOKEN
+            daily_cron: '0 10 * * 6'
+            ig_user_id_secret: ACADEMY_IG_USER_ID
+            fb_page_id_secret: ACADEMY_FB_PAGE_ID
+            page_access_token_secret: ACADEMY_PAGE_ACCESS_TOKEN
+            page_id_secret: ACADEMY_FB_PAGE_ID
 
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -125,8 +133,12 @@ jobs:
             "packages/agents/shared/meta_publisher.py" \
             "sync: meta publisher"
 
-          # ── Mage-specific daily bot scripts ──
-          if [ "$MAGE" = "luna" ] && [ -f "packages/agents/luna/scripts/telegram_bot.py" ]; then
+          # ── Mage-specific scripts ──
+          if [ "$MAGE" = "academy" ]; then
+            upload_file "packages/agents/scripts/academy_publisher.py" \
+              "packages/agents/scripts/academy_publisher.py" \
+              "sync: academy publisher"
+          elif [ "$MAGE" = "luna" ] && [ -f "packages/agents/luna/scripts/telegram_bot.py" ]; then
             upload_file "packages/agents/luna/scripts/telegram_bot.py" \
               "packages/agents/luna/scripts/telegram_bot.py" \
               "sync: telegram bot"
@@ -136,7 +148,7 @@ jobs:
               "sync: daily bot"
           fi
 
-          if [ -f "packages/agents/$MAGE/scripts/requirements.txt" ]; then
+          if [ "$MAGE" != "academy" ] && [ -f "packages/agents/$MAGE/scripts/requirements.txt" ]; then
             upload_file "packages/agents/$MAGE/scripts/requirements.txt" \
               "packages/agents/$MAGE/scripts/requirements.txt" \
               "sync: daily bot requirements"
@@ -157,9 +169,15 @@ jobs:
             ".github/workflows/facebook-monitor.yml" \
             "sync: facebook workflow"
 
-          upload_file "temp-mage-repos/$MAGE/.github/workflows/daily-post.yml" \
-            ".github/workflows/daily-post.yml" \
-            "sync: daily post workflow"
+          if [ "$MAGE" = "academy" ]; then
+            upload_file "temp-mage-repos/academy/.github/workflows/academy-weekend.yml" \
+              ".github/workflows/academy-weekend.yml" \
+              "sync: academy weekend workflow"
+          else
+            upload_file "temp-mage-repos/$MAGE/.github/workflows/daily-post.yml" \
+              ".github/workflows/daily-post.yml" \
+              "sync: daily post workflow"
+          fi
 
           # ── Clean up orphaned old daily workflow files ──
           delete_file() {
@@ -210,23 +228,32 @@ jobs:
           }
 
           set_secret "ANTHROPIC_API_KEY" "${{ secrets.ANTHROPIC_API_KEY }}"
-          set_secret "OPENAI_API_KEY" "${{ secrets.OPENAI_API_KEY }}"
-          set_secret "DATABASE_URL" "${{ secrets.DATABASE_URL }}"
-          set_secret "DIRECT_URL" "${{ secrets.DIRECT_URL }}"
           set_secret "IG_ACCESS_TOKEN" "${{ secrets.IG_ACCESS_TOKEN }}"
-          set_secret "${MAGE^^}_IG_USER_ID" "${{ secrets[matrix.ig_user_id_secret] }}"
-          set_secret "${MAGE^^}_FB_PAGE_ID" "${{ secrets[matrix.fb_page_id_secret] }}"
-          set_secret "${MAGE^^}_PAGE_ACCESS_TOKEN" "${{ secrets[matrix.page_access_token_secret] }}"
-          set_secret "${MAGE^^}_PAGE_ID" "${{ secrets[matrix.page_id_secret] }}"
-          set_secret "${MAGE^^}_TELEGRAM_CHANNEL_ID" "${{ secrets[matrix.telegram_channel_id_secret] }}"
-          set_secret "TELEGRAM_BOT_TOKEN" "${{ secrets.TELEGRAM_BOT_TOKEN }}"
-          set_secret "${MAGE^^}_TELEGRAM_BOT_TOKEN" "${{ secrets[matrix.telegram_bot_token_secret] }}"
-          set_secret "LUMARA_TELEGRAM_CHANNEL_ID" "${{ secrets.LUMARA_TELEGRAM_CHANNEL_ID }}"
-          set_secret "TELEGRAM_CHANNEL_ID" "${{ secrets.TELEGRAM_CHANNEL_ID }}"
           set_secret "SUPABASE_URL" "${{ secrets.SUPABASE_URL }}"
           set_secret "SUPABASE_SERVICE_ROLE_KEY" "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"
           set_secret "INSTAGRAM_MAX_PER_DAY" "${{ secrets.INSTAGRAM_MAX_PER_DAY || '20' }}"
           set_secret "FACEBOOK_MAX_PER_DAY" "${{ secrets.FACEBOOK_MAX_PER_DAY || '15' }}"
+          set_secret "TELEGRAM_ALERT_BOT_TOKEN" "${{ secrets.TELEGRAM_ALERT_BOT_TOKEN }}"
+
+          if [ "$MAGE" = "academy" ]; then
+            set_secret "ACADEMY_IG_USER_ID" "${{ secrets.ACADEMY_IG_USER_ID }}"
+            set_secret "ACADEMY_FB_PAGE_ID" "${{ secrets.ACADEMY_FB_PAGE_ID }}"
+            set_secret "ACADEMY_PAGE_ACCESS_TOKEN" "${{ secrets.ACADEMY_PAGE_ACCESS_TOKEN }}"
+            set_secret "ACADEMY_COVER_IMAGE_URL" "${{ secrets.ACADEMY_COVER_IMAGE_URL }}"
+          else
+            set_secret "OPENAI_API_KEY" "${{ secrets.OPENAI_API_KEY }}"
+            set_secret "DATABASE_URL" "${{ secrets.DATABASE_URL }}"
+            set_secret "DIRECT_URL" "${{ secrets.DIRECT_URL }}"
+            set_secret "${MAGE^^}_IG_USER_ID" "${{ secrets[matrix.ig_user_id_secret] }}"
+            set_secret "${MAGE^^}_FB_PAGE_ID" "${{ secrets[matrix.fb_page_id_secret] }}"
+            set_secret "${MAGE^^}_PAGE_ACCESS_TOKEN" "${{ secrets[matrix.page_access_token_secret] }}"
+            set_secret "${MAGE^^}_PAGE_ID" "${{ secrets[matrix.page_id_secret] }}"
+            set_secret "${MAGE^^}_TELEGRAM_CHANNEL_ID" "${{ secrets[matrix.telegram_channel_id_secret] }}"
+            set_secret "TELEGRAM_BOT_TOKEN" "${{ secrets.TELEGRAM_BOT_TOKEN }}"
+            set_secret "${MAGE^^}_TELEGRAM_BOT_TOKEN" "${{ secrets[matrix.telegram_bot_token_secret] }}"
+            set_secret "LUMARA_TELEGRAM_CHANNEL_ID" "${{ secrets.LUMARA_TELEGRAM_CHANNEL_ID }}"
+            set_secret "TELEGRAM_CHANNEL_ID" "${{ secrets.TELEGRAM_CHANNEL_ID }}"
+          fi
 
           echo "✅ Secrets synced to $REPO"
 
@@ -244,11 +271,16 @@ jobs:
             echo "$secret_list"
             echo ""
             echo "📋 Перевірка критичних секретів для $MAGE:"
-            for required in "ANTHROPIC_API_KEY" "OPENAI_API_KEY" "${MAGE^^}_PAGE_ACCESS_TOKEN" "${MAGE^^}_PAGE_ID" "${MAGE^^}_IG_USER_ID" "${MAGE^^}_TELEGRAM_BOT_TOKEN" "${MAGE^^}_TELEGRAM_CHANNEL_ID"; do
+            if [ "$MAGE" = "academy" ]; then
+              required_secrets="ANTHROPIC_API_KEY IG_ACCESS_TOKEN SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY ACADEMY_PAGE_ACCESS_TOKEN ACADEMY_FB_PAGE_ID ACADEMY_IG_USER_ID"
+            else
+              required_secrets="ANTHROPIC_API_KEY OPENAI_API_KEY ${MAGE^^}_PAGE_ACCESS_TOKEN ${MAGE^^}_PAGE_ID ${MAGE^^}_IG_USER_ID ${MAGE^^}_TELEGRAM_BOT_TOKEN ${MAGE^^}_TELEGRAM_CHANNEL_ID"
+            fi
+            for required in $required_secrets; do
               if echo "$secret_list" | grep -q "^$required[[:space:]]"; then
                 echo "  ✅ $required — присутній"
               else
-                echo "  ❌ $required — ВІДСУТНІЙ (daily_bot.py може впасти)"
+                echo "  ❌ $required — ВІДСУТНІЙ"
               fi
             done
           fi
