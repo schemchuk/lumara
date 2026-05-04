@@ -55,7 +55,7 @@ jobs:
             telegram_channel_id_secret: UMBRA_TELEGRAM_CHANNEL_ID
             telegram_bot_token_secret: UMBRA_TELEGRAM_BOT_TOKEN
           - mage: academy
-            repo: academylumara-hub/lumara  # Замінити на реальну org/repo після створення
+            repo: starWoshe/lumara
             token_secret: ACADEMY_GITHUB_TOKEN
             daily_cron: '0 10 * * 6'
             ig_user_id_secret: ACADEMY_IG_USER_ID
