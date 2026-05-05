@@ -334,6 +334,16 @@ class MageUserBot:
         elapsed_min = (time.time() - self.start_time) / 60
         return elapsed_min >= MAX_RUNTIME_MIN
 
+    async def _interruptible_sleep(self, total_seconds: int):
+        """Сон зі щохвилинною перевіркою timeout — не блокує завершення."""
+        deadline = time.time() + total_seconds
+        while time.time() < deadline:
+            if self._timeout_reached():
+                log(self.mage, '⏹️ Таймаут під час паузи — завершуємо достроково')
+                return
+            remaining = deadline - time.time()
+            await asyncio.sleep(min(60, max(0, remaining)))
+
     async def init_client(self):
         log(self.mage, f'🚀 Старт UserBot. Режим: {self.mode}, API_ID: {str(self.api_id)[:3]}***')
         session_str = self.store.get_session(self.mage)
@@ -432,7 +442,7 @@ class MageUserBot:
 
                 pause_sec = random.randint(self.config['min_reaction_pause_min'], self.config['max_reaction_pause_min']) * 60
                 log(self.mage, f'⏳ Пауза {pause_sec // 60} хв перед наступною дією...')
-                await asyncio.sleep(pause_sec)
+                await self._interruptible_sleep(pause_sec)
 
             except FloodWaitError as e:
                 wait = int(e.seconds * 1.2)
@@ -513,7 +523,7 @@ class MageUserBot:
 
                 pause_sec = random.randint(self.config['min_message_pause_min'], self.config['max_message_pause_min']) * 60
                 log(self.mage, f'⏳ Пауза {pause_sec // 60} хв перед наступною дією...')
-                await asyncio.sleep(pause_sec)
+                await self._interruptible_sleep(pause_sec)
 
             except FloodWaitError as e:
                 wait = int(e.seconds * 1.2)

@@ -416,6 +416,37 @@ def find_trigger(text: str) -> tuple[Optional[str], Optional[str]]:
     return None, None
 
 
+# ── Likes-only mode helpers ────────────────────────────────────────────────────
+
+_MONITOR_KEYWORDS: dict[str, list[str]] = {
+    'LUNA': AGENT_BY_TOPIC_KEYWORDS['LUNA'],
+    'ACADEMY': [kw for kws in AGENT_BY_TOPIC_KEYWORDS.values() for kw in kws],
+}
+_MONITOR_REACTIONS: dict[str, str] = {'LUNA': '🌙', 'ACADEMY': '👍'}
+
+
+def _is_topic_relevant(text: str, monitor: str) -> bool:
+    t = text.lower()
+    return any(kw.lower() in t for kw in _MONITOR_KEYWORDS.get(monitor.upper(), []))
+
+
+def _send_reaction(bot_token: str, chat_id: int, message_id: int, monitor: str):
+    emoji = _MONITOR_REACTIONS.get(monitor.upper(), '👍')
+    try:
+        r = httpx.post(
+            f'https://api.telegram.org/bot{bot_token}/setMessageReaction',
+            json={'chat_id': chat_id, 'message_id': message_id, 'reaction': [{'type': 'emoji', 'emoji': emoji}]},
+            timeout=10,
+        )
+        resp = r.json()
+        if resp.get('ok'):
+            log(f'  ❤️ Реакція {emoji} → msg {message_id} у чаті {chat_id}')
+        else:
+            log(f'  ⚠️ Реакція не вдалась: {resp.get("description", "")}')
+    except Exception as e:
+        log(f'  ⚠️ Помилка реакції: {e}')
+
+
 # ── Telegram API ───────────────────────────────────────────────────────────────
 
 class TelegramBot:
@@ -469,6 +500,9 @@ def main():
         except Exception:
             monitored_groups = set(map(int, monitored_groups_raw.split(',')))
 
+    monitor_mode = os.environ.get('MONITOR_MODE', 'full').lower()
+    active_monitor = os.environ.get('ACTIVE_MONITOR', '').upper()
+
     bot = TelegramBot(bot_token)
     state = get_monitor_state(supabase_url, supabase_key, 'TELEGRAM')
     offset = state.get('offset', 0)
@@ -516,6 +550,12 @@ def main():
         gid = str(chat_id)
         group_chats[gid] = chat
         group_texts.setdefault(gid, []).append(text)
+
+        if monitor_mode == 'likes_only':
+            _lang, _ = find_trigger(text)
+            if _lang or _is_topic_relevant(text, active_monitor):
+                _send_reaction(bot_token, chat_id, msg['message_id'], active_monitor)
+            continue
 
         lang, trigger = find_trigger(text)
         if not lang:
