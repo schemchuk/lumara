@@ -4,12 +4,20 @@ import { getSessionFromStore, setSessionInStore } from './session-store'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'woshem68@gmail.com'
 
+const UNLIMITED_EMAILS = new Set(
+  (process.env.UNLIMITED_EMAILS ?? '')
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean)
+)
+
 export type SessionUser = {
   id: string
   email: string
   name: string | null
   image: string | null
   role: string
+  unlimited: boolean
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
@@ -32,6 +40,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     ?? (user.user_metadata?.picture as string | undefined)
     ?? null
   const isAdmin = user.email === ADMIN_EMAIL
+  const isUnlimited = UNLIMITED_EMAILS.has(user.email.toLowerCase())
   const role = isAdmin ? 'ADMIN' : 'USER'
 
   try {
@@ -54,12 +63,13 @@ export async function getSessionUser(): Promise<SessionUser | null> {
 
       // Адміністратор завжди має роль ADMIN, навіть якщо в БД записано інакше
       const effectiveRole = dbUser.role === 'ADMIN' || isAdmin ? 'ADMIN' : 'USER'
-      const result = {
+      const result: SessionUser = {
         id: dbUser.id,
         email: dbUser.email,
         name: dbUser.name,
         image: dbUser.image,
         role: effectiveRole,
+        unlimited: isUnlimited,
       }
       setSessionInStore(result)
       return result
@@ -74,12 +84,13 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       update: {},
       create: { userId: newUser.id, language: 'uk', timezone: 'Europe/Kiev', academyDisclosureLevel: 1 },
     })
-    const result = {
+    const result: SessionUser = {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
       image: newUser.image,
       role: newUser.role,
+      unlimited: isUnlimited,
     }
     setSessionInStore(result)
     return result
@@ -91,18 +102,19 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       ?? await db.user.findFirst({ where: { email: user.email } }).catch(() => null)
     if (fallbackUser) {
       const effectiveRole = fallbackUser.role === 'ADMIN' || isAdmin ? 'ADMIN' : 'USER'
-      const result = {
+      const result: SessionUser = {
         id: fallbackUser.id,
         email: fallbackUser.email,
         name: fallbackUser.name,
         image: fallbackUser.image,
         role: effectiveRole,
+        unlimited: isUnlimited,
       }
       setSessionInStore(result)
       return result
     }
     // Останній fallback — повертаємо Supabase Auth id (може не існувати в БД)
-    const fallbackResult = { id: user.id, email: user.email, name, image, role }
+    const fallbackResult: SessionUser = { id: user.id, email: user.email, name, image, role, unlimited: isUnlimited }
     setSessionInStore(fallbackResult)
     return fallbackResult
   }

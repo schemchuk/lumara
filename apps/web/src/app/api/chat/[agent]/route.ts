@@ -343,8 +343,8 @@ export async function POST(req: NextRequest, { params }: { params: { agent: stri
         ? subscription.plan
         : 'FREE'
 
-    // Перевірка ліміту повідомлень по плану (адміни мають безліміт)
-    if (session.role !== 'ADMIN') {
+    // Перевірка ліміту повідомлень по плану (адміни та unlimited-юзери мають безліміт)
+    if (session.role !== 'ADMIN' && !session.unlimited) {
       if (plan === 'FREE') {
         const totalMessages = await db.message.count({
           where: {
