@@ -2,10 +2,10 @@ name: 🎬 Video Pipeline — Відео пайплайн магів
 
 on:
   schedule:
-    - cron: '0 8 * * 1'   # LUNA — понеділок 08:00 UTC
-    - cron: '0 8 * * 2'   # ARCAS — вівторок 08:00 UTC
-    - cron: '0 8 * * 3'   # NUMI — середа 08:00 UTC
-    - cron: '0 8 * * 4'   # UMBRA — четвер 08:00 UTC
+    - cron: '0 8 1,11,21 * *'   # LUNA — 1, 11, 21 числа
+    - cron: '0 8 4,14,24 * *'   # ARCAS — 4, 14, 24 числа
+    - cron: '0 8 7,17,27 * *'   # NUMI — 7, 17, 27 числа
+    - cron: '0 8 10,20,30 * *'  # UMBRA — 10, 20, 30 числа
   workflow_dispatch:
     inputs:
       mage:
@@ -28,18 +28,18 @@ jobs:
       - name: Checkout репо
         uses: actions/checkout@v4
 
-      - name: Визначити мага по дню тижня
+      - name: Визначити мага по дню місяця
         id: mage
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "name=${{ inputs.mage }}" >> $GITHUB_OUTPUT
           else
-            DAY=$(date +%u)
+            DAY=$(date +%d)
             case $DAY in
-              1) echo "name=luna" >> $GITHUB_OUTPUT ;;
-              2) echo "name=arcas" >> $GITHUB_OUTPUT ;;
-              3) echo "name=numi" >> $GITHUB_OUTPUT ;;
-              4) echo "name=umbra" >> $GITHUB_OUTPUT ;;
+              01|11|21) echo "name=luna" >> $GITHUB_OUTPUT ;;
+              04|14|24) echo "name=arcas" >> $GITHUB_OUTPUT ;;
+              07|17|27) echo "name=numi" >> $GITHUB_OUTPUT ;;
+              10|20|30) echo "name=umbra" >> $GITHUB_OUTPUT ;;
               *) echo "Сьогодні не день публікації відео, виходимо" && exit 0 ;;
             esac
           fi
