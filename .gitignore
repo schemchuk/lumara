@@ -60,3 +60,6 @@ responseText*))
 str
 void
 
+# Video pipeline output
+content/video-pipeline/output/
+

@@ -1,0 +1,23 @@
+{
+  "mage": "ARCAS",
+  "mage_lower": "arcas",
+  "emoji": "🃏",
+  "post_day": "tuesday",
+  "cron": "0 8 * * 2",
+  "telegram_channel_id": "-1003764526911",
+  "telegram_bot_token_secret": "ARCAS_TELEGRAM_BOT_TOKEN",
+  "ig_user_id_secret": "ARCAS_IG_USER_ID",
+  "ig_access_token_secret": "IG_ACCESS_TOKEN",
+  "fb_page_id_secret": "ARCAS_FB_PAGE_ID",
+  "fb_access_token_secret": "ARCAS_PAGE_ACCESS_TOKEN",
+  "heygen_photo_ids_secret": "ARCAS_HEYGEN_PHOTO_IDS",
+  "heygen_voice_id_secret": "ARCAS_HEYGEN_VOICE_ID",
+  "topic": "таро, оракул, карти, передбачення, енергія дня",
+  "style": "прямий, гострий, без зайвих слів",
+  "cta": "Посилання в біо — карти чекають",
+  "bio_link": "lumara.fyi/links/arcas",
+  "tiktok_hashtags": ["таро", "карти", "оракул", "lumara", "arcas", "tarot", "oracle"],
+  "ig_hashtags": ["таро", "карти", "оракул", "lumara", "arcas", "tarot", "oracle", "reels"],
+  "video_duration_sec": 30,
+  "language": "uk"
+}

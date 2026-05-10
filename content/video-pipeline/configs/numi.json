@@ -1,0 +1,23 @@
+{
+  "mage": "NUMI",
+  "mage_lower": "numi",
+  "emoji": "🔢",
+  "post_day": "wednesday",
+  "cron": "0 8 * * 3",
+  "telegram_channel_id": "-1003955376716",
+  "telegram_bot_token_secret": "NUMI_TELEGRAM_BOT_TOKEN",
+  "ig_user_id_secret": "NUMI_IG_USER_ID",
+  "ig_access_token_secret": "IG_ACCESS_TOKEN",
+  "fb_page_id_secret": "NUMI_FB_PAGE_ID",
+  "fb_access_token_secret": "NUMI_PAGE_ACCESS_TOKEN",
+  "heygen_photo_ids_secret": "NUMI_HEYGEN_PHOTO_IDS",
+  "heygen_voice_id_secret": "NUMI_HEYGEN_VOICE_ID",
+  "topic": "нумерологія, числа долі, особисті роки, код імені",
+  "style": "спокійний, аналітичний, точний",
+  "cta": "Посилання в біо — розрахуй своє число",
+  "bio_link": "lumara.fyi/links/numi",
+  "tiktok_hashtags": ["нумерологія", "числа", "доля", "lumara", "numi", "numerology", "numbers"],
+  "ig_hashtags": ["нумерологія", "числа", "доля", "lumara", "numi", "numerology", "numbers", "reels"],
+  "video_duration_sec": 30,
+  "language": "uk"
+}
