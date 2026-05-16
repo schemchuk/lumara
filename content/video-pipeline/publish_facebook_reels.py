@@ -91,8 +91,8 @@ def publish_reels(config: dict, mage: str, date_str: str) -> str:
     with open(video_path, 'rb') as f:
         upload_headers = {
             'Authorization': f'OAuth {page_token}',
-            'offset': '0',
-            'file_size': str(file_size),
+            'file_offset': '0',
+            'Content-Length': str(file_size),
         }
         r = requests.post(upload_url, headers=upload_headers, data=f, timeout=120)
     if not r.ok:

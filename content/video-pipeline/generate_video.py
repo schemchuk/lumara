@@ -58,7 +58,7 @@ def get_next_photo_id(config: dict, mage: str) -> str:
     # Отримуємо поточний індекс
     result = sb.table('video_queue').select('*').eq('mage', mage).execute()
     if result.data:
-        last_index = result.data[0].get('last_photo_index', 0)
+        last_index = result.data[0].get('last_photo_index', 0) or 0
         next_index = (last_index + 1) % len(photo_ids)
         # Оновлюємо індекс
         sb.table('video_queue').update({'last_photo_index': next_index}).eq('mage', mage).execute()
@@ -103,9 +103,8 @@ def generate_heygen_video(photo_id: str, audio_asset_id: str, api_key: str) -> s
     payload = {
         'video_inputs': [{
             'character': {
-                'type': 'avatar',
-                'avatar_id': photo_id,
-                'avatar_style': 'normal',
+                'type': 'talking_photo',
+                'talking_photo_id': photo_id,
             },
             'voice': {
                 'type': 'audio',
@@ -117,7 +116,6 @@ def generate_heygen_video(photo_id: str, audio_asset_id: str, api_key: str) -> s
             },
         }],
         'dimension': {'width': 1080, 'height': 1920},
-        'aspect_ratio': None,
         'caption': False,
     }
 

@@ -86,7 +86,7 @@ def publish_reels(config: dict, mage: str, date_str: str) -> str:
         'media_type': 'REELS',
         'video_url': video_url,
         'caption': caption,
-        'share_to_feed': 'true',
+        'share_to_feed': True,
         'access_token': access_token,
     }
     r = requests.post(create_url, params=params, timeout=60)
