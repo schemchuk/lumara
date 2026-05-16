@@ -1,16 +1,46 @@
 #!/usr/bin/env python3
 """
-generate_audio.py — Генерація аудіо через ElevenLabs TTS
+generate_audio.py — Генерація аудіо через Microsoft Edge TTS (безкоштовно)
 Читає output/{mage}_script_{DATE}.txt → зберігає output/{mage}_audio_{DATE}.mp3
 """
 
 import argparse
+import asyncio
 import json
 import os
 import sys
 from datetime import datetime
 
-import requests
+import edge_tts
+
+
+# Налаштування голосів для кожного мага
+VOICE_CONFIG = {
+    'luna': {
+        'voice': 'uk-UA-PolinaNeural',
+        'rate': '+0%',
+        'pitch': '+0Hz',
+        'desc': 'жіночий, м\'який, містичний',
+    },
+    'arcas': {
+        'voice': 'uk-UA-OstapNeural',
+        'rate': '+0%',
+        'pitch': '+0Hz',
+        'desc': 'чоловічий, глибокий, таролог',
+    },
+    'numi': {
+        'voice': 'uk-UA-PolinaNeural',
+        'rate': '+15%',
+        'pitch': '+20Hz',
+        'desc': 'жіночий, енергійний, молодий (рижа лисиця)',
+    },
+    'umbra': {
+        'voice': 'uk-UA-PolinaNeural',
+        'rate': '-10%',
+        'pitch': '-30Hz',
+        'desc': 'жіночий, спокійний, зрілий 45-50 (біла миш)',
+    },
+}
 
 
 def load_config(mage: str) -> dict:
@@ -22,6 +52,7 @@ def load_config(mage: str) -> dict:
 
 def send_telegram_alert(message: str) -> None:
     """Надсилає Telegram алерт через загального бота."""
+    import requests
     token = os.environ.get('TELEGRAM_ALERT_BOT_TOKEN')
     chat_id = os.environ.get('LUMARA_TELEGRAM_CHANNEL_ID')
     if not token or not chat_id:
@@ -37,39 +68,30 @@ def send_telegram_alert(message: str) -> None:
         print(f'[ALERT FAIL] {e}')
 
 
+async def generate_audio_async(mage_lower: str, script: str, output_path: str) -> None:
+    """Асинхронна генерація аудіо через Edge TTS."""
+    cfg = VOICE_CONFIG[mage_lower]
+    communicate = edge_tts.Communicate(
+        script,
+        cfg['voice'],
+        rate=cfg['rate'],
+        pitch=cfg['pitch'],
+    )
+    await communicate.save(output_path)
+
+
 def generate_audio(config: dict, script: str, mage: str, date_str: str) -> str:
-    """Генерує аудіо через ElevenLabs API."""
-    api_key = os.environ['ELEVENLABS_API_KEY']
-    voice_id = os.environ[config['heygen_voice_id_secret']]
-
-    url = f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}'
-    headers = {
-        'Accept': 'audio/mpeg',
-        'Content-Type': 'application/json',
-        'xi-api-key': api_key,
-    }
-    payload = {
-        'text': script,
-        'model_id': 'eleven_multilingual_v2',
-        'voice_settings': {
-            'stability': 0.75,
-            'similarity_boost': 0.85,
-            'style': 0.3,
-            'use_speaker_boost': True,
-        },
-    }
-
-    response = requests.post(url, json=payload, headers=headers, timeout=60)
-    response.raise_for_status()
+    """Генерує аудіо через Edge TTS."""
+    mage_lower = config['mage_lower']
+    cfg = VOICE_CONFIG[mage_lower]
 
     output_dir = os.path.join(os.path.dirname(__file__), 'output')
     os.makedirs(output_dir, exist_ok=True)
     audio_path = os.path.join(output_dir, f'{mage}_audio_{date_str}.mp3')
 
-    with open(audio_path, 'wb') as f:
-        f.write(response.content)
+    asyncio.run(generate_audio_async(mage_lower, script, audio_path))
 
-    print(f'[{config["mage"]}] ✅ Аудіо згенеровано (ElevenLabs): {audio_path}')
+    print(f'[{config["mage"]}] ✅ Аудіо згенеровано (Edge TTS — {cfg["desc"]}): {audio_path}')
     return audio_path
 
 
