@@ -98,6 +98,7 @@ def upload_audio_to_heygen(audio_path: str, api_key: str) -> str:
 
 def generate_heygen_video(photo_id: str, audio_asset_id: str, api_key: str) -> str:
     """Крок 2: Створює відео в HeyGen. Повертає video_id."""
+    import uuid
     url = 'https://api.heygen.com/v2/video/generate'
     headers = {
         'Authorization': f'Bearer {api_key}',
@@ -120,6 +121,7 @@ def generate_heygen_video(photo_id: str, audio_asset_id: str, api_key: str) -> s
         }],
         'dimension': {'width': 1080, 'height': 1920},
         'caption': False,
+        'title': f'umbra_{uuid.uuid4().hex[:8]}',
     }
 
     response = requests.post(url, headers=headers, json=payload, timeout=60)
