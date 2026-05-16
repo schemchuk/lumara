@@ -72,7 +72,10 @@ def get_next_photo_id(config: dict, mage: str) -> str:
 
 def upload_audio_to_heygen(audio_path: str, api_key: str) -> str:
     """Крок 1: Завантажує аудіо в HeyGen як asset. Повертає asset_id."""
-    file_name = os.path.basename(audio_path)
+    import uuid
+    base_name = os.path.basename(audio_path)
+    # Унікальний суфікс щоб уникнути Duplicate помилки в HeyGen
+    file_name = f'{uuid.uuid4().hex[:8]}_{base_name}'
     file_size = os.path.getsize(audio_path)
 
     url = 'https://upload.heygen.com/v1/asset'
