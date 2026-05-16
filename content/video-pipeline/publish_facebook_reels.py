@@ -88,13 +88,15 @@ def publish_reels(config: dict, mage: str, date_str: str) -> str:
     print(f'  ✅ Upload session: video_id={video_id}')
 
     # Крок 2: завантаження відео
+    # Додаємо file_offset в URL (Facebook очікує його як query param, не header)
+    sep = '&' if '?' in upload_url else '?'
+    upload_url_with_offset = f'{upload_url}{sep}file_offset=0'
+
     with open(video_path, 'rb') as f:
         upload_headers = {
             'Authorization': f'OAuth {page_token}',
-            'file_offset': '0',
-            'Content-Length': str(file_size),
         }
-        r = requests.post(upload_url, headers=upload_headers, data=f, timeout=120)
+        r = requests.post(upload_url_with_offset, headers=upload_headers, data=f, timeout=120)
     if not r.ok:
         raise RuntimeError(f'Facebook upload помилка: {r.status_code} {r.text[:500]}')
     print(f'  ✅ Відео завантажено на Facebook')
