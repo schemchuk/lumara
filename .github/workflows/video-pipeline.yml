@@ -64,6 +64,8 @@ jobs:
         env:
           # Anthropic
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # OpenAI (TTS для всіх магів)
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           # HeyGen
           HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
           HEYGEN_API_KEY_UMBRA: ${{ secrets.HEYGEN_API_KEY_UMBRA }}
