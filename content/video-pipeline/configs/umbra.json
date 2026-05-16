@@ -11,7 +11,7 @@
   "fb_page_id_secret": "UMBRA_FB_PAGE_ID",
   "fb_access_token_secret": "UMBRA_PAGE_ACCESS_TOKEN",
   "heygen_photo_ids_secret": "UMBRA_HEYGEN_PHOTO_IDS",
-  "heygen_voice_id_secret": "UMBRA_HEYGEN_VOICE_ID",
+  "openai_voice": "echo",
   "topic": "езо-психологія, тінь, підсвідомість, страхи, трансформація",
   "style": "глибокий, інтенсивний, провокативний",
   "cta": "Посилання в біо — зустрінь свою тінь",

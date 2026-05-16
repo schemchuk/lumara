@@ -67,8 +67,6 @@ jobs:
           # HeyGen
           HEYGEN_API_KEY: ${{ secrets.HEYGEN_API_KEY }}
           HEYGEN_API_KEY_UMBRA: ${{ secrets.HEYGEN_API_KEY_UMBRA }}
-          # ElevenLabs
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           # Supabase
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -105,13 +103,9 @@ jobs:
           UMBRA_IG_USER_ID: ${{ secrets.UMBRA_IG_USER_ID }}
           UMBRA_PAGE_ACCESS_TOKEN: ${{ secrets.UMBRA_PAGE_ACCESS_TOKEN }}
           UMBRA_FB_PAGE_ID: ${{ secrets.UMBRA_FB_PAGE_ID }}
-          # HeyGen Avatar (Photo) і Voice IDs
+          # HeyGen Avatar (Photo IDs)
           LUNA_HEYGEN_PHOTO_IDS: ${{ secrets.LUNA_HEYGEN_PHOTO_IDS }}
-          LUNA_HEYGEN_VOICE_ID: ${{ secrets.LUNA_HEYGEN_VOICE_ID }}
           ARCAS_HEYGEN_PHOTO_IDS: ${{ secrets.ARCAS_HEYGEN_PHOTO_IDS }}
-          ARCAS_HEYGEN_VOICE_ID: ${{ secrets.ARCAS_HEYGEN_VOICE_ID }}
           NUMI_HEYGEN_PHOTO_IDS: ${{ secrets.NUMI_HEYGEN_PHOTO_IDS }}
-          NUMI_HEYGEN_VOICE_ID: ${{ secrets.NUMI_HEYGEN_VOICE_ID }}
           UMBRA_HEYGEN_PHOTO_IDS: ${{ secrets.UMBRA_HEYGEN_PHOTO_IDS }}
-          UMBRA_HEYGEN_VOICE_ID: ${{ secrets.UMBRA_HEYGEN_VOICE_ID }}
         run: python pipeline.py --mage ${{ steps.mage.outputs.name }}

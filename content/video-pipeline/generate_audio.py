@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-generate_audio.py — Генерація аудіо через ElevenLabs TTS
+generate_audio.py — Генерація аудіо через OpenAI TTS
 Читає output/{mage}_script_{DATE}.txt → зберігає output/{mage}_audio_{DATE}.mp3
 """
 
@@ -38,25 +38,20 @@ def send_telegram_alert(message: str) -> None:
 
 
 def generate_audio(config: dict, script: str, mage: str, date_str: str) -> str:
-    """Генерує аудіо через ElevenLabs API."""
-    api_key = os.environ['ELEVENLABS_API_KEY']
-    voice_id = os.environ[config['heygen_voice_id_secret']]
+    """Генерує аудіо через OpenAI TTS API."""
+    api_key = os.environ['OPENAI_API_KEY']
+    voice = config.get('openai_voice', 'alloy')
 
-    url = f'https://api.elevenlabs.io/v1/text-to-speech/{voice_id}'
+    url = 'https://api.openai.com/v1/audio/speech'
     headers = {
-        'Accept': 'audio/mpeg',
+        'Authorization': f'Bearer {api_key}',
         'Content-Type': 'application/json',
-        'xi-api-key': api_key,
     }
     payload = {
-        'text': script,
-        'model_id': 'eleven_multilingual_v2',
-        'voice_settings': {
-            'stability': 0.75,
-            'similarity_boost': 0.85,
-            'style': 0.3,
-            'use_speaker_boost': True,
-        },
+        'model': 'tts-1',
+        'input': script,
+        'voice': voice,
+        'response_format': 'mp3',
     }
 
     response = requests.post(url, json=payload, headers=headers, timeout=60)
@@ -69,7 +64,7 @@ def generate_audio(config: dict, script: str, mage: str, date_str: str) -> str:
     with open(audio_path, 'wb') as f:
         f.write(response.content)
 
-    print(f'[{config["mage"]}] ✅ Аудіо згенеровано: {audio_path}')
+    print(f'[{config["mage"]}] ✅ Аудіо згенеровано (OpenAI TTS, voice={voice}): {audio_path}')
     return audio_path
 
 
