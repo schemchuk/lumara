@@ -11,7 +11,7 @@
   "fb_page_id_secret": "ARCAS_FB_PAGE_ID",
   "fb_access_token_secret": "ARCAS_PAGE_ACCESS_TOKEN",
   "heygen_photo_ids_secret": "ARCAS_HEYGEN_PHOTO_IDS",
-  "openai_voice": "onyx",
+  "heygen_voice_id_secret": "ARCAS_HEYGEN_VOICE_ID",
   "topic": "таро, оракул, карти, передбачення, енергія дня",
   "style": "прямий, гострий, без зайвих слів",
   "cta": "Посилання в біо — карти чекають",

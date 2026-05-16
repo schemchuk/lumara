@@ -11,7 +11,7 @@
   "fb_page_id_secret": "LUNA_FB_PAGE_ID",
   "fb_access_token_secret": "LUNA_PAGE_ACCESS_TOKEN",
   "heygen_photo_ids_secret": "LUNA_HEYGEN_PHOTO_IDS",
-  "openai_voice": "nova",
+  "heygen_voice_id_secret": "LUNA_HEYGEN_VOICE_ID",
   "topic": "астрологія, місяць, знаки зодіаку, натальна карта",
   "style": "містичний, поетичний, м'який",
   "cta": "Посилання в біо — знайди свій шлях",
