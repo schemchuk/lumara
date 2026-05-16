@@ -68,7 +68,7 @@ def generate_script(config: dict, date_str: str) -> str:
     )
 
     response = client.messages.create(
-        model='claude-sonnet-4-20250514',
+        model='claude-sonnet-4-6',
         max_tokens=500,
         system=system_prompt,
         messages=[{'role': 'user', 'content': user_prompt}],
