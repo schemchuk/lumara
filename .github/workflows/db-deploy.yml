@@ -77,7 +77,9 @@ jobs:
         run: |
           if [ -f "packages/database/supabase-migration.sql" ]; then
             echo "Applying supabase-migration.sql..."
-            psql "$DATABASE_URL" -f packages/database/supabase-migration.sql || {
+            # psql не підтримує query parameters (наприклад ?pgbouncer=true) у URI
+            CLEAN_DB_URL=$(echo "$DATABASE_URL" | sed 's/\?.*//')
+            psql "$CLEAN_DB_URL" -f packages/database/supabase-migration.sql || {
               echo "Schema SQL failed — continuing to RLS..."
             }
           else
@@ -88,7 +90,8 @@ jobs:
         run: |
           if [ -f "packages/database/rls-policies.sql" ]; then
             echo "Applying rls-policies.sql..."
-            psql "$DATABASE_URL" -f packages/database/rls-policies.sql || {
+            CLEAN_DB_URL=$(echo "$DATABASE_URL" | sed 's/\?.*//')
+            psql "$CLEAN_DB_URL" -f packages/database/rls-policies.sql || {
               echo "RLS SQL failed — check if tables exist"
             }
           else
@@ -99,7 +102,8 @@ jobs:
         run: |
           if [ -f "packages/database/auto-grants.sql" ]; then
             echo "Applying auto-grants.sql..."
-            psql "$DATABASE_URL" -f packages/database/auto-grants.sql || {
+            CLEAN_DB_URL=$(echo "$DATABASE_URL" | sed 's/\?.*//')
+            psql "$CLEAN_DB_URL" -f packages/database/auto-grants.sql || {
               echo "Auto-grants SQL failed — check connectivity"
             }
           else
