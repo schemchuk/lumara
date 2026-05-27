@@ -21,3 +21,13 @@ INSERT INTO "academy_gossip" ("text", "active", "sort_order") VALUES
   ('Хтось залишив мед на порозі академії — бджоли завжди приходять раніше ніж ректор', true, 4),
   ('Вночі чути тихе дзижчання — ті хто знає розуміють що це означає', true, 5)
 ON CONFLICT DO NOTHING;
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- GRANT: явні дозволи для доступу через Supabase PostgREST/API
+-- З 30.05.2026 Supabase вимагає явні GRANT для таблиць у схемі public.
+-- ──────────────────────────────────────────────────────────────────────────────
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+GRANT ALL ON "academy_gossip" TO service_role;
+GRANT SELECT ON "academy_gossip" TO anon, authenticated;

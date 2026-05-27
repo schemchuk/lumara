@@ -214,6 +214,7 @@ CI/CD виконує лише:
 - Всі таблиці мають `created_at` і `updated_at`
 - М'яке видалення: `deleted_at TIMESTAMP` (не видаляти записи фізично)
 - Поле `tenant_id` закладено для майбутнього white-label
+- **GRANT для Supabase API:** з 30.05.2026 Supabase вимагає явні `GRANT` для таблиць у схемі `public` (PostgREST, GraphQL, supabase-js). Кожна таблиця має отримати `GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;` та відповідні `GRANT` на таблицю (`SELECT` для anon/authenticated залежно від RLS політик, `ALL` для service_role). Автоматичне надання дозволів реалізовано через `packages/database/auto-grants.sql` (функція `grant_public_tables()`), яка виконується в CI/CD після кожного деплою бази.
 
 ### Змінні середовища для БД
 ```env

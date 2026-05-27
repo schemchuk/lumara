@@ -395,3 +395,60 @@ VALUES
   ('purpose_ua', 'Призначення UA', 'призначення', 'LUNA', true, 'Покликання, місія, доля'),
   ('astrology_chat_ua', 'Астро-чат Україна', 'астрологія', 'LUNA', true, 'Загальна астрологічна дискусія')
 ON CONFLICT DO NOTHING;
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- GRANT: явні дозволи для доступу через Supabase PostgREST/API
+-- З 30.05.2026 Supabase вимагає явні GRANT для таблиць у схемі public.
+-- ──────────────────────────────────────────────────────────────────────────────
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+GRANT ALL ON "users" TO service_role;
+GRANT SELECT, INSERT, UPDATE ON "users" TO authenticated;
+
+GRANT ALL ON "accounts" TO service_role;
+GRANT SELECT ON "accounts" TO authenticated;
+
+GRANT ALL ON "sessions" TO service_role;
+GRANT SELECT ON "sessions" TO authenticated;
+
+GRANT ALL ON "profiles" TO service_role;
+GRANT SELECT, INSERT, UPDATE ON "profiles" TO authenticated;
+
+GRANT ALL ON "agents" TO service_role;
+GRANT SELECT ON "agents" TO anon, authenticated;
+
+GRANT ALL ON "conversations" TO service_role;
+GRANT SELECT, INSERT, UPDATE ON "conversations" TO authenticated;
+
+GRANT ALL ON "messages" TO service_role;
+GRANT SELECT, INSERT ON "messages" TO authenticated;
+
+GRANT ALL ON "subscriptions" TO service_role;
+GRANT SELECT ON "subscriptions" TO authenticated;
+
+GRANT ALL ON "courses" TO service_role;
+GRANT SELECT ON "courses" TO anon, authenticated;
+
+GRANT ALL ON "enrollments" TO service_role;
+GRANT SELECT, INSERT ON "enrollments" TO authenticated;
+
+GRANT ALL ON "content_queue" TO service_role;
+
+GRANT ALL ON "activity_logs" TO service_role;
+GRANT SELECT ON "activity_logs" TO authenticated;
+
+GRANT ALL ON "token_usage" TO service_role;
+GRANT SELECT ON "token_usage" TO authenticated;
+
+GRANT ALL ON "admin_settings" TO service_role;
+
+GRANT ALL ON "monitor_states" TO service_role;
+
+GRANT ALL ON "telegram_groups" TO service_role;
+
+GRANT ALL ON "monitored_groups" TO service_role;
+
+GRANT ALL ON "userbot_sessions" TO service_role;
+
+GRANT ALL ON "userbot_logs" TO service_role;

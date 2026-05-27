@@ -304,3 +304,76 @@ ALTER TABLE "userbot_sessions" ENABLE ROW LEVEL SECURITY;
 -- ──────────────────────────────────────────────────────────────────────────────
 
 ALTER TABLE "userbot_logs" ENABLE ROW LEVEL SECURITY;
+
+-- ──────────────────────────────────────────────────────────────────────────────
+-- 28. GRANT: явні дозволи для доступу через Supabase PostgREST/API
+-- З 30.05.2026 Supabase вимагає явні GRANT для таблиць у схемі public.
+-- service_role отримує ALL (вона обходить RLS), authenticated/anon отримують
+-- SELECT + write-дозволи відповідно до політик вище.
+-- ──────────────────────────────────────────────────────────────────────────────
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+-- Базовий SELECT для authenticated/anon на всі таблиці з RLS політиками
+GRANT SELECT ON "users" TO authenticated;
+GRANT SELECT ON "accounts" TO authenticated;
+GRANT SELECT ON "sessions" TO authenticated;
+GRANT SELECT ON "profiles" TO authenticated;
+GRANT SELECT ON "agents" TO anon, authenticated;
+GRANT SELECT ON "conversations" TO authenticated;
+GRANT SELECT ON "messages" TO authenticated;
+GRANT SELECT ON "subscriptions" TO authenticated;
+GRANT SELECT ON "courses" TO anon, authenticated;
+GRANT SELECT ON "enrollments" TO authenticated;
+GRANT SELECT ON "activity_logs" TO authenticated;
+GRANT SELECT ON "token_usage" TO authenticated;
+GRANT SELECT ON "announcement_states" TO authenticated;
+GRANT SELECT ON "user_context" TO authenticated;
+GRANT SELECT ON "outreach_responses" TO authenticated;
+GRANT SELECT ON "referral_clicks" TO anon, authenticated;
+GRANT SELECT ON "monitor_states" TO service_role;
+GRANT SELECT ON "telegram_groups" TO service_role;
+GRANT SELECT ON "telegram_conversations" TO service_role;
+GRANT SELECT ON "monitored_groups" TO service_role;
+GRANT SELECT ON "userbot_sessions" TO service_role;
+GRANT SELECT ON "userbot_logs" TO service_role;
+GRANT SELECT ON "content_queue" TO service_role;
+GRANT SELECT ON "admin_settings" TO service_role;
+GRANT SELECT ON "verification_tokens" TO service_role;
+GRANT SELECT ON "academy_gossip" TO anon, authenticated;
+
+-- Write-дозволи відповідно до RLS політик
+GRANT INSERT, UPDATE ON "users" TO authenticated;
+GRANT INSERT, UPDATE ON "profiles" TO authenticated;
+GRANT INSERT, UPDATE ON "conversations" TO authenticated;
+GRANT INSERT ON "messages" TO authenticated;
+GRANT INSERT ON "enrollments" TO authenticated;
+GRANT INSERT ON "referral_clicks" TO anon;
+
+-- service_role: повний доступ на всі таблиці (backend, Python скрипти, Prisma)
+GRANT ALL ON "users" TO service_role;
+GRANT ALL ON "accounts" TO service_role;
+GRANT ALL ON "sessions" TO service_role;
+GRANT ALL ON "profiles" TO service_role;
+GRANT ALL ON "agents" TO service_role;
+GRANT ALL ON "conversations" TO service_role;
+GRANT ALL ON "messages" TO service_role;
+GRANT ALL ON "subscriptions" TO service_role;
+GRANT ALL ON "courses" TO service_role;
+GRANT ALL ON "enrollments" TO service_role;
+GRANT ALL ON "activity_logs" TO service_role;
+GRANT ALL ON "token_usage" TO service_role;
+GRANT ALL ON "announcement_states" TO service_role;
+GRANT ALL ON "user_context" TO service_role;
+GRANT ALL ON "outreach_responses" TO service_role;
+GRANT ALL ON "referral_clicks" TO service_role;
+GRANT ALL ON "monitor_states" TO service_role;
+GRANT ALL ON "telegram_groups" TO service_role;
+GRANT ALL ON "telegram_conversations" TO service_role;
+GRANT ALL ON "monitored_groups" TO service_role;
+GRANT ALL ON "userbot_sessions" TO service_role;
+GRANT ALL ON "userbot_logs" TO service_role;
+GRANT ALL ON "content_queue" TO service_role;
+GRANT ALL ON "admin_settings" TO service_role;
+GRANT ALL ON "verification_tokens" TO service_role;
+GRANT ALL ON "academy_gossip" TO service_role;

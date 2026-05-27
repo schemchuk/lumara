@@ -65,6 +65,20 @@ CREATE POLICY "Allow read referral_clicks" ON "referral_clicks"
 -- Дозволити вставку через service role (виконується поза RLS)
 -- Service Role Key обходить RLS за замовчуванням
 
+-- ──────────────────────────────────────────────────────────────────────────────
+-- GRANT: явні дозволи для доступу через Supabase PostgREST/API
+-- З 30.05.2026 Supabase вимагає явні GRANT для таблиць у схемі public.
+-- ──────────────────────────────────────────────────────────────────────────────
+
+GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+GRANT ALL ON "outreach_responses" TO service_role;
+GRANT SELECT ON "outreach_responses" TO authenticated;
+
+GRANT ALL ON "referral_clicks" TO service_role;
+GRANT SELECT, INSERT ON "referral_clicks" TO anon;
+GRANT SELECT ON "referral_clicks" TO authenticated;
+
 -- =========================================
 -- Перевірка
 -- =========================================

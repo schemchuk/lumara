@@ -95,3 +95,14 @@ jobs:
             echo "rls-policies.sql not found, skipping"
           fi
 
+      - name: Apply Auto-Grants for Supabase API Access
+        run: |
+          if [ -f "packages/database/auto-grants.sql" ]; then
+            echo "Applying auto-grants.sql..."
+            psql "$DATABASE_URL" -f packages/database/auto-grants.sql || {
+              echo "Auto-grants SQL failed — check connectivity"
+            }
+          else
+            echo "auto-grants.sql not found, skipping"
+          fi
+
