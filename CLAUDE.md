@@ -1,5 +1,25 @@
 # CLAUDE.md — Інструкції для Claude агента
 
+---
+
+## 🔒 СТАТУС: ЗАКОНСЕРВОВАНО (2026-05-30)
+
+**Проект тимчасово призупинено.**
+
+- Всі GitHub Actions воркфлоу вимкнено (`disabled_manually`)
+- Supabase база даних видалена — при відновленні створювати нову БД з нуля
+- Дані в старій БД не критичні
+- Telegram воркфлоу (UserBot, Monitor) також вимкнені — вони залежали від Supabase
+
+### При відновленні проекту:
+1. Увімкнути потрібні воркфлоу: `gh workflow enable <назва>`
+2. Створити новий Supabase проект і оновити secrets: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `DIRECT_URL`
+3. Застосувати схему БД через `db-deploy` воркфлоу
+4. Перевірити всі secrets у GitHub → Settings → Secrets
+5. Видалити тимчасовий воркфлоу `conserve-notify.yml`
+
+---
+
 ## 🌿 Проект: LUMARA Academy
 
 Це головний файл інструкцій для Claude Code агента.
