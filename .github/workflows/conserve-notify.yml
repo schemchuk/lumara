@@ -1,0 +1,15 @@
+name: Conservation Notify (одноразовий)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Відправити повідомлення про консервацію в Telegram
+        run: |
+          TEXT="🔒 LUMARA — ПРОЕКТ ЗАКОНСЕРВОВАНО%0A%0A✅ Всі GitHub Actions воркфлоу вимкнено%0A❌ Telegram воркфлоу також вимкнено (Supabase видалено, скрипти неможливо запустити без БД)%0A%0AПри відновленні — починати з нуля (нова база даних).%0A%0AДата: $(date '+%Y-%m-%d %H:%M UTC')"
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_ALERT_BOT_TOKEN }}/sendMessage" \
+            -d "chat_id=@Volodymyr_Shemchuk" \
+            -d "text=$TEXT"
